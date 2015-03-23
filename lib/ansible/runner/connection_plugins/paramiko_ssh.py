@@ -113,7 +113,7 @@ SFTP_CONNECTION_CACHE = {}
 class Connection(object):
     ''' SSH based connections with Paramiko '''
 
-    def __init__(self, runner, host, port, user, password, private_key_file, *args, **kwargs):
+    def __init__(self, runner, host, port, user, password, private_key_file, ssh_args, proxy_host, proxy_port, proxy_user, proxy_private_key_file, *args, **kwargs):
 
         self.ssh = None
         self.sftp = None
@@ -414,4 +414,3 @@ class Connection(object):
             fcntl.lockf(KEY_LOCK, fcntl.LOCK_UN)
 
         self.ssh.close()
-

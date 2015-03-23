@@ -25,14 +25,15 @@ import errno
 from ansible import utils
 from ansible.errors import AnsibleError
 
+
 class Connector(object):
     ''' Handles abstract connections to remote hosts '''
 
     def __init__(self, runner):
         self.runner = runner
 
-    def connect(self, host, port, user, password, transport, private_key_file):
-        conn = utils.plugins.connection_loader.get(transport, self.runner, host, port, user=user, password=password, private_key_file=private_key_file)
+    def connect(self, host, port, user, password, transport, private_key_file, ssh_args, proxy_host, proxy_port, proxy_user, proxy_private_key_file):
+        conn = utils.plugins.connection_loader.get(transport, self.runner, host, port, user=user, password=password, private_key_file=private_key_file, ssh_args=ssh_args, proxy_host=proxy_host, proxy_port=proxy_port, proxy_user=proxy_user, proxy_private_key_file=proxy_private_key_file)
         if conn is None:
             raise AnsibleError("unsupported connection type: %s" % transport)
         if private_key_file:
@@ -41,7 +42,7 @@ class Connector(object):
             try:
                 st = os.stat(private_key_file)
             except (IOError, OSError), e:
-                if e.errno != errno.ENOENT: # file is missing, might be agent
+                if e.errno != errno.ENOENT:  # file is missing, might be agent
                     raise(e)
 
             if st is not None and st.st_mode & (stat.S_IRGRP | stat.S_IROTH):
